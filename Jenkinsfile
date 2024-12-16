@@ -28,7 +28,7 @@ pipeline {
             steps{
                 withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform apply plan.tfplan -auto-approve'
+                    sh 'terraform apply -input=false plan.tfplan'
                 }
             }
         }
