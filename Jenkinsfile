@@ -20,7 +20,7 @@ pipeline {
             steps{
                 withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform plan -out=plan.tfplan -input=false'
+                    sh 'terraform plan -input=false -out=plan.tfplan'
                 }
             }
         }
