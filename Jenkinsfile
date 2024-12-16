@@ -18,17 +18,17 @@ pipeline {
         }
         stage('Terraform plan'){
             steps{
-                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform plan -input=false -out=plan.tfplan'
+                    sh 'terraform plan -out=plan.tfplan -input=false'
                 }
             }
         }
         stage('Terraform Apply'){
             steps{
-                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform apply -input=false plan.tfplan'
+                    sh 'terraform apply -auto-approve plan.tfplan'
                 }
             }
         }
