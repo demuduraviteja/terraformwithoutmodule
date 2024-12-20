@@ -13,14 +13,14 @@ pipeline {
         }
         stage('Terraform init'){
             steps{
-                sh 'terraform init'
+                bat 'terraform init'
             }
         }
         stage('Terraform plan'){
             steps{
                 withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform plan -out=plan.tfplan -input=false'
+                    bat 'terraform plan -out=plan.tfplan -input=false'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
             steps{
                 withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform apply -auto-approve plan.tfplan'
+                    bat 'terraform apply -auto-approve plan.tfplan'
                 }
             }
         }
