@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        TF_LOG = 'TRACE'
+        TF_LOG_PATH = 'terraform.log'
+    }
     stages{
         stage('Checkout'){
             steps{
@@ -9,22 +13,22 @@ pipeline {
         }
         stage('Terraform init'){
             steps{
-                sh 'terraform init'
+                bat 'terraform init'
             }
         }
         stage('Terraform plan'){
             steps{
-                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform plan -out=plan.tfplan'
+                    bat 'terraform plan -out=plan.tfplan -input=false'
                 }
             }
         }
         stage('Terraform Apply'){
             steps{
-                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-iam-role-ravi', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                withCredentials([[$class:'AmazonWebServicesCredentialsBinding',accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'aws-iam-role-ravi']]) {
                     echo "AWS Acess key:${AWS_ACCESS_KEY_ID}"
-                    sh 'terraform apply plan.tfplan --auto-approve'
+                    bat 'terraform apply -auto-approve plan.tfplan'
                 }
             }
         }
